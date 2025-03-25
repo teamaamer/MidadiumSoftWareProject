@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -53,9 +54,11 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _isLoading = true;
     });
+const String baseUrl = kIsWeb
+    ? "http://localhost:5000"  // Web --> localhost
+    : "http://10.0.2.2:5000";  // Android Emulator --> 10.0.2.2
 
-    // Change the URL as needed
-    final url = Uri.parse('http://10.0.2.2:5000/api/auth/signup');
+final url = Uri.parse('$baseUrl/api/auth/signup');
 
     try {
       final response = await http.post(

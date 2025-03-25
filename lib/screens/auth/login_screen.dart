@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -26,58 +27,16 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  // Send login request to backend
-  // Future<void> _submit() async {
-  //   if (!_formKey.currentState!.validate()) return;
-
-  //   _formKey.currentState!.save();
-  //   setState(() => _isLoading = true);
-
-  //   final url = Uri.parse(
-  //     'http://10.0.2.2:5000/api/auth/login',
-  //   ); // Change 'localhost' to your IP if using an emulator
-
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       headers: {"Content-Type": "application/json"},
-  //       body: jsonEncode({"email": _email, "password": _password}),
-  //     );
-
-  //     final responseData = jsonDecode(response.body);
-
-  //     if (response.statusCode == 200) {
-  //       // Store JWT token securely
-  //       await _storage.write(key: "token", value: responseData['token']);
-
-  //       ScaffoldMessenger.of(
-  //         context,
-  //       ).showSnackBar(const SnackBar(content: Text("Login successful!")));
-
-  //       // Navigate to home screen
-  //       Navigator.pushReplacementNamed(context, '/home');
-  //     } else {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text(responseData['message'] ?? "Login failed")),
-  //       );
-  //     }
-  //   } catch (error) {
-  //     ScaffoldMessenger.of(
-  //       context,
-  //     ).showSnackBar(SnackBar(content: Text("An error occurred: $error")));
-  //   } finally {
-  //     setState(() => _isLoading = false);
-  //   }
-  // }
 Future<void> _submit() async {
   if (!_formKey.currentState!.validate()) return;
 
   _formKey.currentState!.save();
   setState(() => _isLoading = true);
+const String baseUrl = kIsWeb
+    ? "http://localhost:5000"  // Web uses localhost
+    : "http://10.0.2.2:5000";  // Android Emulator uses 10.0.2.2
 
-  final url = Uri.parse(
-    'http://10.0.2.2:5000/api/auth/login',
-  ); // Use your backend's URL/IP
+final url = Uri.parse('$baseUrl/api/auth/login');
 
   try {
     final response = await http.post(
